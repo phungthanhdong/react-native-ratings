@@ -96,6 +96,11 @@ export type TapRatingProps = {
    * Pass in a custom base image source
    */
   starImage?: string;
+
+  /**
+   * Allow zero star selection
+   */
+  allowEmpty?: boolean,
 };
 
 const TapRating: React.FunctionComponent<TapRatingProps> = props => {
@@ -117,14 +122,19 @@ const TapRating: React.FunctionComponent<TapRatingProps> = props => {
     } );
   };
 
-  const starSelectedInPosition = position => {
-    const { onFinishRating } = props;
+  const starSelectedInPosition = _position => {
+    const { onFinishRating, allowEmpty } = props;
 
-    if ( typeof onFinishRating === "function" ) {
-      onFinishRating( position );
+    let newPosition = _position;
+    if(position == 1 && newPosition == 1 && allowEmpty) {
+      newPosition = 0;
     }
 
-    setPosition( position );
+    if ( typeof onFinishRating === "function" ) {
+      onFinishRating( newPosition );
+    }
+
+    setPosition( newPosition );
   };
 
   const { count, reviews, showRating, reviewColor, reviewSize } = props;
